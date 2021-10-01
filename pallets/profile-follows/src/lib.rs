@@ -10,6 +10,7 @@ use pallet_profiles::{Module as Profiles, SocialAccountById};
 use pallet_utils::remove_from_vec;
 
 pub mod rpc;
+pub mod migrations;
 
 pub use pallet::*;
 
@@ -17,10 +18,14 @@ pub use pallet::*;
 pub mod pallet {
     use frame_support::{
         dispatch::DispatchResultWithPostInfo,
+        traits::StorageVersion,
         pallet_prelude::*,
     };
     use frame_system::{ensure_signed, pallet_prelude::*};
     use super::*;
+
+    /// The current storage version.
+    const STORAGE_VERSION: StorageVersion = StorageVersion::new(2);
 
     /// The pallet's configuration trait.
     #[pallet::config]
@@ -126,7 +131,7 @@ pub mod pallet {
 
     #[pallet::storage]
     #[pallet::getter(fn account_followers)]
-    pub type AccountFollowers<T: Config> = StorageMap<_, Blake2_128Concat, T::AccountId, Vec<T::AccountId>, ValueQuery>;
+    pub type AccountFollowers<T: Config>  = StorageMap<_, Blake2_128Concat, T::AccountId, Vec<T::AccountId>, ValueQuery>;
 
     #[pallet::storage]
     #[pallet::getter(fn account_followed_by_account)]

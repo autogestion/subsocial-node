@@ -605,7 +605,32 @@ pub type Executive = frame_executive::Executive<
     frame_system::ChainContext<Runtime>,
     Runtime,
     AllModules,
+	MigrateProfileFollowsPalletPrefix
 >;
+
+
+const PROFILE_FOLLOWS_OLD_PREFIX: &str = "ProfileFollowsModule";
+/// Migrate pallet-tips from `Treasury` to the new pallet prefix `Tips`
+pub struct MigrateProfileFollowsPalletPrefix;
+
+impl OnRuntimeUpgrade for MigrateProfileFollowsPalletPrefix {
+	fn on_runtime_upgrade() -> frame_support::weights::Weight {
+		pallet_profile_follows::migrations::migrate::<Runtime, ProfileFollows, _>(PROFILE_FOLLOWS_OLD_PREFIX)
+	}
+
+	#[cfg(feature = "try-runtime")]
+	fn pre_upgrade() -> Result<(), &'static str> {
+		pallet_profile_follows::migrations::pre_migrate::<Runtime, ProfileFollows, _>(PROFILE_FOLLOWS_OLD_PREFIX);
+		Ok(())
+	}
+
+	#[cfg(feature = "try-runtime")]
+	fn post_upgrade() -> Result<(), &'static str> {
+		pallet_profile_follows::migrations::post_migrate::<Runtime, ProfileFollows, _>(PROFILE_FOLLOWS_OLD_PREFIX);
+		Ok(())
+	}
+}
+
 
 impl_runtime_apis! {
 	impl sp_api::Core<Block> for Runtime {

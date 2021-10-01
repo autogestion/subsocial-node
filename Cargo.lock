@@ -3927,9 +3927,11 @@ version = "0.7.0"
 dependencies = [
  "frame-support",
  "frame-system",
+ "log",
  "pallet-profiles",
  "pallet-utils",
  "parity-scale-codec",
+ "sp-io",
  "sp-std",
 ]
 
